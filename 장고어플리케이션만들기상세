@@ -1,0 +1,177 @@
+작업환경만들기
+python -m venv 만들고싶은 작업환경이름
+
+작업환경 실행하기
+source  작업환경이름/bin/activate
+
+작업환경 끝내기
+deactivate
+
+장고설치하기
+(작업환경) pip install django==장고(판번호)
+
+장고 작업공간 만들기
+mkdir 장고 작업공간 이름
+cd 장고 작업공간 이름
+
+장고 프로젝트 만들기
+django-admin startproject 기본설정 보관할 공간 이름 .
+- 끝에 '.' 을 붙이지 않으면 공간 이름으로 방을 만들고 그 아래에 같은 이름으로 기본설정을 보관할 방을 또 만든다.
+
+이런 작업환경을 만들었습니다.
+
+        장고 작업공간
+        ├── 기본설정/
+        │      ├─ asgi.py
+        │      ├─ settings.py    <-- 작동환경
+        │      ├─ urls.py        <-- 주소목록
+        │      ├─ wsgi.py
+        │      └─ __init__.py
+        └── manage.py
+
+기능을 담당할 앱을 만듭니다.
+django-admin startapp 앱이름
+
+기본설정의 주소목록을 편집기로 열어서 앱의 주소를 등록합니다.
+urls.py 위쪽에 이 줄을 추가합니다.
+
+#-- 이 줄에 'include' 추가합니다
+from django.urls import path, include
+
+주소 등록하는 곳에 앱에서 사용할 주소 목록을 등록합니다.
+urlpatterns = [
+    path('admin/', admin.site.urls),
+
+#-- 이줄 추가합니다.
+    path('앱이름/', include('앱이름.urls')),
+]
+
+앱 방에 앱에서 관리할 주소목록을 만들고 내용을 추가합니다.
+앱 -> urls.py 를 만들고
+이 내용을 추가합니다.
+처음 접속하면 보여주는 페이지가 됩니다.
+
+        #-- 이렇게 수정합니다.
+        from django.urls import path
+        from . import views
+
+        urlpatterns = [
+            path('', views.index, name='index'),
+        #-- 여기에 접속할 주소들을 계속 추가하여 등록합니다.
+        ]
+
+여기서  path('인터넷 탐색기에서 요청한 주소', views.주소에 맞는 함수, name='정해진 주소 이름'),
+의 형태로 작성합니다.
+
+이제 앱 방의 views.py 에 index 함수를 만들어 줍니다.
+        from django.shortcuts import render
+
+        # Create your views here.
+        #-- index 함수를 추가합니다.
+        def index(request):
+            return render(request, 'index.html')
+
+
+
+부트스트랩을 내려받습니다.
+https://getbootstrap.com/docs/5.0/getting-started/download/
+
+장고 작업공간에서 그림이나 글씨 등 변경하지 않고 사용할 자료를 담아둘 방을 만듭니다.
+mkdir static
+
+부트스트랩 압축을 풀면 나오는 css와 js 방을 통째 복사해서 static 방에 담아 둡니다.
+
+제이쿼리를 다운받아 js 방에 넣습니다.
+https://jquery.com/download/
+
+장고 작업공간에 사람들에게 보여줄 모양을 정하는 html 화일들을 보관하는 templates 방을 만듭니다.
+mkdir templates
+
+부트스트랩 무료 템플릿을 구해서 설치합니다.
+https://startbootstrap.com/theme/clean-blog
+여기서 블로그용 테마를 내려받아 압축을 풉니다.
+
+static 방과 templates 방에 블로그테마를 담아둘 방을 각각 만듭니다.
+
+블로그 테마의 내용중 확장자가 .html 은 templates의 블로그테마 방으로
+나머지는 통째 static 방의 블로그테마 방으로 옮깁니다.
+
+작동환경을 설정하는 settings.py 를 열어서 아래와 같이 편집합니다.
+사용할 템플릿 위치 설정
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#-- 여기를 이렇게 수정합니다. 템플릿의 기본 위치를 블로그 테마를 넣어둔 곳으로 지정합니다.
+        'DIRS': [BASE_DIR / 'templates/blogtheme'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+사용할 정적화일의 위치 설정
+        STATIC_URL = '/static/'
+        #-- 여기를 추가합니다. 정적화일의 기본 방을 블로그 테마 방으로 지정합니다.
+        STATICFILES_DIRS = [
+            BASE_DIR / 'static/blogtheme',
+        ]
+
+언어 코드와 시간대를 수정합니다.
+        LANGUAGE_CODE = 'ko-kr'
+        TIME_ZONE = 'Asia/Seoul'
+
+장고 개발 서버를 실행해 봅니다.
+python manage.py runserver
+
+오류 없이 아래와 같은 메세지가 나오면 일단 성공입니다.
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March 22, 2021 - 13:48:34
+Django version 3.1.7, using settings 'config.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+인터넷탐색기를 열고 127.0.0.1:8000 주소를 입력하고 접속해 봅니다.
+좀 썰렁하지만 내용이 보입니다.
+
+이제 templates 블로그테마 방에 있는 index.html 을 열어서 수정합니다.
+
+맨위에 {% load static %} 명령을 추가합니다.
+        #-- 이렇게 합니다.
+        {% load static %}
+
+        <!DOCTYPE html>
+        <html lang="ko">
+
+        <head>
+
+정적화일을 불러올 수 있도록 아래와 같은 형태로 css js 그림화일들의 위치를 모두 수정합니다.
+href="{% static '정적화일이름' %}"
+
+다른 화일과 연결하는 링크들은 아래와 같이 모두 수정합니다.
+href="{% url '정해진 주소 이름' %}"
+
+이제 나머지 html 화일들에 대해서도 동일한 작업을 하시면 장고 프로젝터에 테마를 이식하는 작업은 끝납니다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
