@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row">
+        
+        {% if presenting_list %}
+            {% for presenting in presenting_list %}
+
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-preview">
+                <a href="{% url 'forum:detail' presenting.id %}">
+                    <h2 class="post-title">
+                        {{ presenting.subject }}
+                    </h2>
+                </a>
+                    <p class="post-subtitle">
+                        {{ presenting.content }}
+                    </p>
+                    <p class="post-meta">Posted by
+                        <a href="#">Start Bootstrap</a> on September 24, 2019
+                    </p>
+            </div>
+           <hr>
+       </div>
+
+           {% endfor %}
+       {% endif %}
+
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+

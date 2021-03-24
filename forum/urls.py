@@ -16,14 +16,9 @@ Including another URLconf
 from django.urls import path
 from . import views
 
-app_name = 'main'
+app_name = 'forum'
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('index/', views.index, name='index'),
-    path('about/', views.about, name='about'),
-    path('post/', views.post, name='post'),
-    path('contact/', views.contact, name='contact'),
+    path('forum/', views.index, name='index'),
+    path('forum/<int:presenting_id>/', views.detail, name='detail'),
 ]
-
-
