@@ -19,6 +19,6 @@ from . import views
 app_name = 'forum'
 
 urlpatterns = [
-    path('forum/', views.index, name='index'),
-    path('forum/<int:presenting_id>/', views.detail, name='detail'),
+    path('', views.index, name='index'),
+    path('<int:presenting_id>/', views.detail, name='detail'),
 ]

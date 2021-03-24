@@ -10,7 +10,7 @@ def index(request):
     포럼의 제시된 안건 목록을 보여줍니다.
     """
     presenting_list = Presenting.objects.order_by('-create_date')
-    context = {'presenting_list': presenting_list}
+    context = {'제시목록': presenting_list}
     return render(request, 'forum/presenting_list.html', context)
 
 
