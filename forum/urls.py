@@ -21,5 +21,5 @@ app_name = 'forum'
 urlpatterns = [
     path('', views.index, name='index'),
     path('<int:presenting_id>/', views.detail, name='detail'),
-    path('suggestion/create/<int:question_id>/', views.suggestion_create, name='suggestion_create'),
+    path('suggestion/create/<int:presenting_id>/', views.suggestion_create, name='suggestion_create'),
 ]

@@ -16,9 +16,7 @@ class Presenting(models.Model):
 
 class Suggestion(models.Model):
     suggestion = models.ForeignKey(Presenting, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
 
-    def __str__(self):
-        return self.subject
+ 

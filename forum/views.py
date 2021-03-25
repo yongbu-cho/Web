@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from .models import Presenting
@@ -24,7 +24,7 @@ def detail(request, presenting_id):
     return render(request, 'forum/presenting_detail.html', context)
 
 
-def suggestion_create(request, question_id):
+def suggestion_create(request, presenting_id):
     """
     제시 안건에 제안 등록
     """
