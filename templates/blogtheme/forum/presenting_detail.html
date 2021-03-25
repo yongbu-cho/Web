@@ -17,6 +17,12 @@
     </div>
 </article>
 
+<form action="{% url 'forum:suggestion_create' presenting.id %}" method="post">
+  {% csrf_token %}
+  <textarea name="content" id="content" rows="15"></textarea>
+  <input type="submit" value="제안등록">
+</form>
+
 <hr>
 
 

@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from .models import Presenting
-
+from django.utils import timezone
 
 
 def index(request):
@@ -22,3 +22,12 @@ def detail(request, presenting_id):
     presenting = Presenting.objects.get(id=presenting_id)
     context = {'presenting': presenting}
     return render(request, 'forum/presenting_detail.html', context)
+
+
+def suggestion_create(request, question_id):
+    """
+    제시 안건에 제안 등록
+    """
+    presenting = get_object_or_404(Presenting, pk=presenting_id)
+    presenting.suggestion_set.create(content=request.POST.get('content'), create_date=timezone.now())    
+    return redirect('forum:detail', presenting_id=presenting.id)
