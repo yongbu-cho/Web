@@ -8,21 +8,21 @@
 <div class="container">
     <div class="row">
         
-        {% if presenting_list %}
-            {% for presenting in presenting_list %}
+        {% if 제시목록 %}
+            {% for 안건 in 제시목록 %}
 
         <div class="col-lg-8 col-md-10 mx-auto">
             <div class="post-preview">
-                <a href="{% url 'forum:detail' presenting.id %}">
+                <a href="{% url 'forum:detail' 안건.id %}">
                     <h2 class="post-title">
-                        {{ presenting.subject }}
+                        {{ 안건.subject }}
                     </h2>
                 </a>
                     <p class="post-subtitle">
-                        {{ presenting.content }}
+                        {{ 안건.content }}
                     </p>
                     <p class="post-meta">Posted by
-                        <a href="#">Start Bootstrap</a> on September 24, 2019
+                        <a href="#">Start Bootstrap</a> {{ 안건.create_date }}
                     </p>
             </div>
            <hr>
