@@ -31,3 +31,11 @@ def suggestion_create(request, presenting_id):
     presenting = get_object_or_404(Presenting, pk=presenting_id)
     presenting.suggestion_set.create(content=request.POST.get('content'), create_date=timezone.now())    
     return redirect('forum:detail', presenting_id=presenting.id)
+
+
+def presenting_create(request):
+    """
+    새로운 안건  등록
+    """
+    form = PresentingForm()
+    return render(request, 'forum/presenting_form.html', {'form': form})    
