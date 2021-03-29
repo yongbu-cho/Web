@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from .models import Presenting
 from django.utils import timezone
-from .forms import PresentingForm
+from .forms import PresentingForm, SuggestionForm
 
 
 def index(request):
@@ -30,8 +30,20 @@ def suggestion_create(request, presenting_id):
     제시 안건에 제안 등록
     """
     presenting = get_object_or_404(Presenting, pk=presenting_id)
-    presenting.suggestion_set.create(content=request.POST.get('content'), create_date=timezone.now())    
-    return redirect('forum:detail', presenting_id=presenting.id)
+
+    if request.method == "POST":
+        form = SuggestionForm(request.POST)
+        if form.is_valid():
+            suggestion = form.save(commit=False)
+            suggestion.create_date = timezone.now()
+            suggestion.suggestion = presenting
+            suggestion.save()
+            return redirect('forum:detail', presenting_id=presenting.id)
+    else:
+        form = SuggestionForm()
+    context = {'presenting': presenting, 'form': form}
+    return render(request, 'forum/presenting_detail.html', context)
+
 
 
 def presenting_create(request):
@@ -47,5 +59,5 @@ def presenting_create(request):
             return redirect('forum:index')
     else:
         form = PresentingForm()
-        context = {'form': form}
-        return render(request, 'forum/presenting_form.html', context)
+    context = {'form': form}
+    return render(request, 'forum/presenting_form.html', context)

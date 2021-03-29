@@ -1,5 +1,5 @@
 from django import forms
-from forum.models import Presenting
+from forum.models import Presenting, Suggestion
 
 
 class PresentingForm(forms.ModelForm):
@@ -11,3 +11,12 @@ class PresentingForm(forms.ModelForm):
             'subject': '제목',
             'content': '내용',    
         }
+
+
+class SuggestionForm(forms.ModelForm):
+    class Meta:
+        model = Suggestion
+        fields = ['content']
+        labels = {
+            'content': '답변내용',
+        }        
