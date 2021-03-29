@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from .models import Presenting
 from django.utils import timezone
+from .forms import PresentingForm
 
 
 def index(request):
@@ -37,5 +38,14 @@ def presenting_create(request):
     """
     새로운 안건  등록
     """
-    form = PresentingForm()
-    return render(request, 'forum/presenting_form.html', {'form': form})    
+    if request.method == 'POST':
+        form = PresentingForm(request.POST)
+        if form.is_valid():
+            presenting = form.save(commit=False)
+            presenting.create_date = timezone.now()
+            presenting.save()
+            return redirect('forum:index')
+    else:
+        form = PresentingForm()
+        context = {'form': form}
+        return render(request, 'forum/presenting_form.html', context)
