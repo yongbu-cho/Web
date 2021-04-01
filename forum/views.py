@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Presenting
 from django.utils import timezone
 from .forms import PresentingForm, SuggestionForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def index(request):
@@ -24,7 +26,7 @@ def detail(request, presenting_id):
     context = {'presenting': presenting}
     return render(request, 'forum/presenting_detail.html', context)
 
-
+@login_required(login_url='common:login')
 def suggestion_create(request, presenting_id):
     """
     제시 안건에 제안 등록
@@ -35,6 +37,7 @@ def suggestion_create(request, presenting_id):
         form = SuggestionForm(request.POST)
         if form.is_valid():
             suggestion = form.save(commit=False)
+            suggestion.author = request.user
             suggestion.create_date = timezone.now()
             suggestion.suggestion = presenting
             suggestion.save()
@@ -45,7 +48,7 @@ def suggestion_create(request, presenting_id):
     return render(request, 'forum/presenting_detail.html', context)
 
 
-
+@login_required(login_url='common:login')
 def presenting_create(request):
     """
     새로운 안건  등록
@@ -54,6 +57,7 @@ def presenting_create(request):
         form = PresentingForm(request.POST)
         if form.is_valid():
             presenting = form.save(commit=False)
+            presenting.author = request.user
             presenting.create_date = timezone.now()
             presenting.save()
             return redirect('forum:index')
@@ -61,3 +65,41 @@ def presenting_create(request):
         form = PresentingForm()
     context = {'form': form}
     return render(request, 'forum/presenting_form.html', context)
+
+
+@login_required(login_url='common:login')
+def presenting_modify(request, presenting_id):
+    """
+    forum 제시문 수정
+    """
+    presenting = get_object_or_404(Presenting, pk=presenting_id)
+    if request.user != presenting.author:
+        messages.error(request, '수정권한이 없습니다')
+        return redirect('forum:detail', presenting_id=presenting.id)
+
+    if request.method == "POST":
+        form = PresentingForm(request.POST, instance=presenting)
+        if form.is_valid():
+            presenting = form.save(commit=False)
+            presenting.author = request.user
+            presenting.modify_date = timezone.now()  # 수정일시 저장
+            presenting.save()
+            return redirect('forum:detail', presenting_id=presenting.id)
+    else:
+        form = PresentingForm(instance=presenting)
+    context = {'form': form}
+    return render(request, 'forum/presenting_form.html', context)    
+
+
+
+@login_required(login_url='common:login')
+def presenting_delete(request, presenting_id):
+    """
+    forum 질문삭제
+    """
+    presenting = get_object_or_404(Presenting, pk=presenting_id)
+    if request.user != presenting.author:
+        messages.error(request, '삭제권한이 없습니다')
+        return redirect('forum:detail', presenting_id=presenting.id)
+    presenting.delete()
+    return redirect('forum:index')    

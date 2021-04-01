@@ -6,12 +6,41 @@
 
 <article>
     <div class="container my-3">
+
+        <!-- 사용자오류 표시 -->
+        {% if messages %}
+        <div class="alert alert-danger my-3" role="alert">
+        {% for message in messages %}
+            <strong>{{ message.tags }}</strong>
+            <ul><li>{{ message.message }}</li></ul>
+        {% endfor %}
+        </div>
+        {% endif %}
+
+
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
             
-          <h1 class="border-bottom py-2">{{ presenting.subject }}</h1>    
+          <h2 class="border-bottom py-2">{{ presenting.subject }}</h2>    
             <p>
                 {{ presenting.content }}
+
+                  <div class="badge badge-light p-2 text-left">
+                      글쓴 이 &nbsp; {{ presenting.author.username }} &nbsp;&nbsp;&nbsp;
+                          글쓴 때 &nbsp; {{ presenting.create_date }}
+                  </div>
+
+                  {% if request.user == presenting.author %}
+                  <div class="my-3">
+                      <a href="{% url 'forum:presenting_modify' presenting.id  %}" 
+                         class="btn btn-sm btn-outline-secondary">고쳐쓰기</a>
+
+                      <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                      data-uri="{% url 'forum:presenting_delete' presenting.id  %}">지우기</a>
+
+                  </div>
+                  {% endif %}
+
             </p>
 
                   <!--제안내용을 모두 표시하는 부분-->
@@ -26,9 +55,14 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                      <div class="badge badge-light p-2">
-                          {{ suggestion.create_date }}
-                      </div>
+
+                        <div class="badge badge-light p-2 text-left">
+
+                            <div class="mb-2">글쓴 이 &nbsp; {{ suggestion.author.username }} &nbsp;&nbsp;&nbsp;
+                                  글쓴 때 &nbsp; {{ suggestion.create_date }}
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -52,7 +86,10 @@
                   {% endif %}
 
                   <div class="form-group">
-                     <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+                      <textarea 
+                        {% if not user.is_authenticated %}disabled{% endif %} 
+                                  name="content" id="content" class="form-control" rows="10">
+                      </textarea>
                   </div>
                   <input type="submit" value="제안등록" class="btn btn-primary">
                 </form>
@@ -65,5 +102,21 @@
 
 <hr>
 
+
+{% endblock %}
+
+<!-- 자바 스크립트 블럭 -->
+
+{% block script %}
+
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".delete").on('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+});
+</script>
 
 {% endblock %}

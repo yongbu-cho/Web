@@ -21,11 +21,11 @@
                     <p class="post-subtitle">
                         {{ 안건.content }}
                     </p>
-                    <p class="post-meta">Posted by
-                        <a href="#">Start Bootstrap</a> {{ 안건.create_date }}
+                    <p class="post-meta">글쓴 이   &nbsp;
+                        <a href="#">{{ 안건.author.username }}</a> &nbsp; &nbsp; &nbsp;   글쓴 때  &nbsp;  {{ 안건.create_date }}
 
                         {% if 안건.suggestion_set.count > 0 %}
-                            <span class="text-danger small ml-2">{{ 안건.suggestion_set.count }}</span>
+                             &nbsp; &nbsp;  &nbsp; 제안글 수  &nbsp;  {{ 안건.suggestion_set.count }}
                         {% endif %}
 
                     </p>
